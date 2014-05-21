@@ -1,8 +1,16 @@
 #!perl -T
 
+use 5.006;
+
+use strict;
+
+use warnings FATAL => 'all';
+
+use Test::More;
 
 
-use Test::More tests => 50;
+
+plan tests => 50;
 
 
 

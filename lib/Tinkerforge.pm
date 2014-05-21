@@ -2,7 +2,7 @@ package Tinkerforge;
 
 # setting the module version
 use vars '$VERSION';
-our $VERSION = '2.0.1';
+our $VERSION = '2.1.0';
 
 =pod
 
@@ -14,138 +14,224 @@ Tinkerforge - Official Perl support for all Tinkerforge Bricks and Bricklets
 
 =head1 VERSION
 
-version 2.0.1
+Version 2.1.0
 
-=head1 DESCRIPTION
+=head1 ABSTRACT
 
-Tinkerforge Perl module provides official API support for all Tinkerforge Bricks and Bricklets.
-A comprehensive documentation for the Perl bindings can be found at,
+The Tinkerforge Perl module provides official API support for all Tinkerforge
+Bricks and Bricklets. A comprehensive documentation for the Perl bindings can
+be found at,
 English: L<strict|http://www.tinkerforge.com/en/doc/Software/API_Bindings_Perl.html>
 German: L<strict|http://www.tinkerforge.com/de/doc/Software/API_Bindings_Perl.html>
 
+=cut
+
+=head1 INSTALLATION
+
+As a very basic requirement one must install the following packages from the
+Tinkerforge namespace,
+
+Tinkerforge::IPConnection
+Tinkerforge::Error
+Tinkerforge::Device
+
+After having these packages installed one can run the authentication and
+enumeration examples.
+
+To be able to use the Perl bindings with a device on must install the device
+specific packages first. For example, if someone wants to use the Humidity Bricklet
+then the person must install the package,
+
+Tinkerforge::BrickletHumidity
+
+After installing the basic packages as mentioned above.
+
 =head1 EXAMPLES
+
+=head2 AUTHENTICATION
+
+    #!/usr/bin/perl
+
+    use Tinkerforge::IPConnection;
+
+    use constant HOST => 'localhost';
+    use constant PORT => 4223;
+    use constant SECRET => 'My Authentication Secret!';
+
+    # Create IPConnection
+    our $ipcon = Tinkerforge::IPConnection->new();
+
+    # Authenticate each time the connection got (re-)established
+    sub cb_connected
+    {
+        my ($connect_reason) = @_;
+
+        if ($connect_reason == $ipcon->CONNECT_REASON_REQUEST)
+        {
+            print "Connected by request\n";
+        }
+        elsif ($connect_reason == $ipcon->CONNECT_REASON_AUTO_RECONNECT)
+        {
+            print "Auto-Reconnect\n";
+        }
+
+        # Authenticate first...
+        eval
+        {
+            $ipcon->authenticate(&SECRET);
+            print "Authentication succeeded\n";
+        };
+        if ($!)
+        {
+            print "Could not authenticate: $!\n";
+            return;
+        }
+
+        # ...then trigger Enumerate
+        $ipcon->enumerate();
+    }
+
+    # Print incoming enumeration
+    sub cb_enumerate
+    {
+        my ($uid, $connected_uid, $position, $hardware_version,
+        $firmware_version, $device_identifier, $enumeration_type) = @_;
+
+        print "UID: $uid, Enumeration Type: $enumeration_type\n";
+    }
+
+    # Register Connected Callback
+    $ipcon->register_callback($ipcon->CALLBACK_CONNECTED, 'cb_connected');
+
+    # Register Enumerate Callback
+    $ipcon->register_callback($ipcon->CALLBACK_ENUMERATE, 'cb_enumerate');
+
+    # Connect to brickd
+    $ipcon->connect(&HOST, &PORT);
+
+    print "Press any key to exit...\n";
+    <STDIN>;
+    $ipcon->disconnect();
 
 =head2 ENUMERATION
 
-#!/usr/bin/perl
+    #!/usr/bin/perl
 
-use Tinkerforge::IPConnection;
+    use Tinkerforge::IPConnection;
 
-use constant HOST => 'localhost';
-use constant PORT => 4223;
+    use constant HOST => 'localhost';
+    use constant PORT => 4223;
 
-# Print incoming enumeration
-sub cb_enumerate()
-{
-	my ($uid, $connected_uid, $position, $hardware_version,
-	    $firmware_version, $device_identifier, $enumeration_type) = @_;
+    # Print incoming enumeration
+    sub cb_enumerate()
+    {
+        my ($uid, $connected_uid, $position, $hardware_version,
+            $firmware_version, $device_identifier, $enumeration_type) = @_;
 
-	print "\nUID:               ".$uid;
-	print "\nEnumeration Type:  ".$enumeration_type;
+        print "\nUID:               ".$uid;
+        print "\nEnumeration Type:  ".$enumeration_type;
 
-	if ($enumeration_type == Tinkerforge::IPConnection->ENUMERATION_TYPE_DISCONNECTED)
-	{
-		print "\n";
-		return 1;
-	}
+        if ($enumeration_type == Tinkerforge::IPConnection->ENUMERATION_TYPE_DISCONNECTED)
+        {
+            print "\n";
+            return 1;
+        }
 
-	print "\nConnected UID:     ".$connected_uid;
-	print "\nPosition:          ".$position;
-	print "\nHardware Version:  ".join('.', @$hardware_version);
-	print "\nFirmware Version:  ".join('.', @$firmware_version);
-	print "\nDevice Identifier: ".$device_identifier;
-	print "\n";
-}
+        print "\nConnected UID:     ".$connected_uid;
+        print "\nPosition:          ".$position;
+        print "\nHardware Version:  ".join('.', @$hardware_version);
+        print "\nFirmware Version:  ".join('.', @$firmware_version);
+        print "\nDevice Identifier: ".$device_identifier;
+        print "\n";
+    }
 
-# Create connection and connect to brickd
-my $ipcon = Tinkerforge::IPConnection->new();
+    # Create connection and connect to brickd
+    my $ipcon = Tinkerforge::IPConnection->new();
 
-$ipcon->connect(&HOST, &PORT);
+    $ipcon->connect(&HOST, &PORT);
 
-# Register Enumerate Callback
-$ipcon->register_callback($ipcon->CALLBACK_ENUMERATE, 'cb_enumerate');
+    # Register Enumerate Callback
+    $ipcon->register_callback($ipcon->CALLBACK_ENUMERATE, 'cb_enumerate');
 
-# Trigger Enumerate
-$ipcon->enumerate();
+    # Trigger Enumerate
+    $ipcon->enumerate();
 
-print "\nPress any key to exit...\n";
-<STDIN>;
-$ipcon->disconnect();
+    print "\nPress any key to exit...\n";
+    <STDIN>;
+    $ipcon->disconnect();
 
 =head2 GETTER CALL
 
-#!/usr/bin/perl  
+    #!/usr/bin/perl
 
-use Tinkerforge::IPConnection;
-use Tinkerforge::BrickletHumidity;
+    use Tinkerforge::IPConnection;
+    use Tinkerforge::BrickletHumidity;
 
-use constant HOST => 'localhost';
-use constant PORT => 4223;
-use constant UID => '7bA'; # Change to your UID
+    use constant HOST => 'localhost';
+    use constant PORT => 4223;
+    use constant UID => '7bA'; # Change to your UID
 
-my $ipcon = Tinkerforge::IPConnection->new(); # Create IP connection
-my $h = Tinkerforge::BrickletHumidity->new(&UID, $ipcon); # Create device object
+    my $ipcon = Tinkerforge::IPConnection->new(); # Create IP connection
+    my $h = Tinkerforge::BrickletHumidity->new(&UID, $ipcon); # Create device object
 
-$ipcon->connect(&HOST, &PORT); # Connect to brickd
-# Don't use device before ipcon is connected
+    $ipcon->connect(&HOST, &PORT); # Connect to brickd
+    # Don't use device before ipcon is connected
 
-# Get current humidity (unit is %RH/10)
-my $rh = $h->get_humidity()/10.0;
+    # Get current humidity (unit is %RH/10)
+    my $rh = $h->get_humidity()/10.0;
 
-print "\nRelative Humidity: ".$rh." RH%\n";
+    print "\nRelative Humidity: ".$rh." RH%\n";
 
-print "\nPress any key to exit...\n";
-<STDIN>;
-$ipcon->disconnect();
-
+    print "\nPress any key to exit...\n";
+    <STDIN>;
+    $ipcon->disconnect();
 
 =head2 SETTER AND CALLBACK
 
-#!/usr/bin/perl  
+    #!/usr/bin/perl
 
-use Tinkerforge::IPConnection;
-use Tinkerforge::BrickletHumidity;
+    use Tinkerforge::IPConnection;
+    use Tinkerforge::BrickletHumidity;
 
-use constant HOST => 'localhost';
-use constant PORT => 4223;
-use constant UID => '7bA'; # Change to your UID
+    use constant HOST => 'localhost';
+    use constant PORT => 4223;
+    use constant UID => '7bA'; # Change to your UID
 
-my $ipcon = Tinkerforge::IPConnection->new(); # Create IP connection
-my $h = Tinkerforge::BrickletHumidity->new(&UID, $ipcon); # Create device object
+    my $ipcon = Tinkerforge::IPConnection->new(); # Create IP connection
+    my $h = Tinkerforge::BrickletHumidity->new(&UID, $ipcon); # Create device object
 
-# Callback function for humidity callback (parameter has unit %RH/10)
-sub cb_reached
-{
-    my ($humidity) = @_;
-
-    if($humidity < 30*10)
+    # Callback function for humidity callback (parameter has unit %RH/10)
+    sub cb_reached
     {
-        print "\nHumidity too low: ".$humidity/10.0." RH%\n";
-    }   
-    if($humidity > 60*10)
-    {
-        print "\nHumidity too high: ".$humidity/10.0." RH%\n";
-    } 
+        my ($humidity) = @_;
 
-    print "\nRecommended humiditiy for human comfort is 30 to 60 %RH.\n";
-}
+        if($humidity < 30*10)
+        {
+            print "\nHumidity too low: ".$humidity/10.0." RH%\n";
+        }
+        if($humidity > 60*10)
+        {
+            print "\nHumidity too high: ".$humidity/10.0." RH%\n";
+        }
 
-$ipcon->connect(&HOST, &PORT); # Connect to brickd
-# Don't use device before ipcon is connected
+        print "\nRecommended humiditiy for human comfort is 30 to 60 %RH.\n";
+    }
 
-# Get threshold callbacks with a debounce time of 10 seconds (10000ms)
-$h->set_debounce_period(100);
+    $ipcon->connect(&HOST, &PORT); # Connect to brickd
+    # Don't use device before ipcon is connected
 
-# Register threshold reached callback to function cb_reached
-$h->register_callback($h->CALLBACK_HUMIDITY_REACHED, 'cb_reached');
+    # Get threshold callbacks with a debounce time of 10 seconds (10000ms)
+    $h->set_debounce_period(100);
 
-# Configure threshold for "outside of 30 to 60 %RH" (unit is %RH/10)
-$h->set_humidity_callback_threshold('o', 30*10, 60*10);
+    # Register threshold reached callback to function cb_reached
+    $h->register_callback($h->CALLBACK_HUMIDITY_REACHED, 'cb_reached');
 
-print "\nPress any key to exit...\n";
-<STDIN>;
-$ipcon->disconnect();
+    # Configure threshold for "outside of 30 to 60 %RH" (unit is %RH/10)
+    $h->set_humidity_callback_threshold('o', 30*10, 60*10);
 
+    print "\nPress any key to exit...\n";
+    <STDIN>;
+    $ipcon->disconnect();
 
 =head1 AUTHOR
 
@@ -160,4 +246,3 @@ with or without modification, are permitted. See the Creative Commons
 Zero (CC0 1.0) License for more details.
 
 =cut
-

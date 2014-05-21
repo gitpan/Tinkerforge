@@ -1,37 +1,104 @@
 
 #############################################################
-# This file was automatically generated on 2014-02-24.      #
+# This file was automatically generated on 2014-05-21.      #
 #                                                           #
-# Bindings Version 2.0.1                                    #
+# Bindings Version 2.1.0                                    #
 #                                                           #
 # If you have a bugfix for this file and want to commit it, #
 # please fix the bug in the generator. You can find a link  #
 # to the generator git on tinkerforge.com                   #
 #############################################################
 
-package Tinkerforge::BrickletDualButton;
-=comment
-        Device with two buttons and two LEDs
+=pod
+
+=encoding utf8
+
+=head1 NAME
+
+Tinkerforge::BrickletDualButton - Device with two buttons and two LEDs
+
 =cut
 
-use Tinkerforge::Device;
-use Tinkerforge::IPConnection;
-use Tinkerforge::Error;
+package Tinkerforge::BrickletDualButton;
+
 use strict;
 use warnings;
 use Carp;
 use threads;
 use threads::shared;
+use parent 'Tinkerforge::Device';
+use Tinkerforge::IPConnection;
+use Tinkerforge::Error;
+
+=head1 CONSTANTS
+
+=over
+
+=item DEVICE_IDENTIFIER
+
+This constant is used to identify a Dual Button Bricklet.
+
+The get_identity() subroutine and the CALLBACK_ENUMERATE callback of the
+IP Connection have a device_identifier parameter to specify the Brick's or
+Bricklet's type.
+
+=cut
 
 use constant DEVICE_IDENTIFIER => 230;
+
+=item CALLBACK_STATE_CHANGED
+
+This constant is used with the register_callback() subroutine to specify
+the CALLBACK_STATE_CHANGED callback.
+
+=cut
+
 use constant CALLBACK_STATE_CHANGED => 4;
 
-use constant FUNCTION_SET_LED_STATE => 1;
-use constant FUNCTION_GET_LED_STATE => 2;
-use constant FUNCTION_GET_BUTTON_STATE => 3;
-use constant FUNCTION_SET_SELECTED_LED_STATE => 5;
-use constant FUNCTION_GET_IDENTITY => 255;
+=item FUNCTION_SET_LED_STATE
 
+This constant is used with the get_response_expected(), set_response_expected()
+and set_response_expected_all() subroutines.
+
+=cut
+
+use constant FUNCTION_SET_LED_STATE => 1;
+
+=item FUNCTION_GET_LED_STATE
+
+This constant is used with the get_response_expected(), set_response_expected()
+and set_response_expected_all() subroutines.
+
+=cut
+
+use constant FUNCTION_GET_LED_STATE => 2;
+
+=item FUNCTION_GET_BUTTON_STATE
+
+This constant is used with the get_response_expected(), set_response_expected()
+and set_response_expected_all() subroutines.
+
+=cut
+
+use constant FUNCTION_GET_BUTTON_STATE => 3;
+
+=item FUNCTION_SET_SELECTED_LED_STATE
+
+This constant is used with the get_response_expected(), set_response_expected()
+and set_response_expected_all() subroutines.
+
+=cut
+
+use constant FUNCTION_SET_SELECTED_LED_STATE => 5;
+
+=item FUNCTION_GET_IDENTITY
+
+This constant is used with the get_response_expected(), set_response_expected()
+and set_response_expected_all() subroutines.
+
+=cut
+
+use constant FUNCTION_GET_IDENTITY => 255;
 use constant LED_STATE_AUTO_TOGGLE_ON => 0;
 use constant LED_STATE_AUTO_TOGGLE_OFF => 1;
 use constant LED_STATE_ON => 2;
@@ -41,244 +108,131 @@ use constant BUTTON_STATE_RELEASED => 1;
 use constant LED_LEFT => 0;
 use constant LED_RIGHT => 1;
 
+
+=back
+
+=head1 FUNCTIONS
+
+=over
+
+=item new()
+
+Creates an object with the unique device ID *uid* and adds it to
+the IP Connection *ipcon*.
+
+=cut
+
 sub new
 {
-=comment
-        Creates an object with the unique device ID *uid* and adds it to
-        the IP Connection *ipcon*.
-=cut
-    my ($class, $uid, $ipcon) = @_;
+	my ($class, $uid, $ipcon) = @_;
 
-    my $self :shared = shared_clone({super => shared_clone(Tinkerforge::Device->new($uid, $ipcon)),
-                                     api_version => [2, 0, 0],
-                                     response_expected => shared_clone({&FUNCTION_SET_LED_STATE => Tinkerforge::Device->RESPONSE_EXPECTED_FALSE,
-                                                                        &FUNCTION_GET_LED_STATE => Tinkerforge::Device->RESPONSE_EXPECTED_ALWAYS_TRUE,
-                                                                        &FUNCTION_GET_BUTTON_STATE => Tinkerforge::Device->RESPONSE_EXPECTED_ALWAYS_TRUE,
-                                                                        &CALLBACK_STATE_CHANGED => Tinkerforge::Device->RESPONSE_EXPECTED_ALWAYS_FALSE,
-                                                                        &FUNCTION_SET_SELECTED_LED_STATE => Tinkerforge::Device->RESPONSE_EXPECTED_FALSE,
-                                                                        &FUNCTION_GET_IDENTITY => Tinkerforge::Device->RESPONSE_EXPECTED_ALWAYS_TRUE}),
-                                    callback_formats => shared_clone({                                                                      &CALLBACK_STATE_CHANGED => 'C C C C'})});
+	my $self = Tinkerforge::Device->_new($uid, $ipcon, [2, 0, 0]);
 
-    $self->{super}->{ipcon}->{devices}->{$self->{super}->{uid}} = $self;
+	$self->{response_expected}->{&FUNCTION_SET_LED_STATE} = Tinkerforge::Device->_RESPONSE_EXPECTED_FALSE;
+	$self->{response_expected}->{&FUNCTION_GET_LED_STATE} = Tinkerforge::Device->_RESPONSE_EXPECTED_ALWAYS_TRUE;
+	$self->{response_expected}->{&FUNCTION_GET_BUTTON_STATE} = Tinkerforge::Device->_RESPONSE_EXPECTED_ALWAYS_TRUE;
+	$self->{response_expected}->{&CALLBACK_STATE_CHANGED} = Tinkerforge::Device->_RESPONSE_EXPECTED_ALWAYS_FALSE;
+	$self->{response_expected}->{&FUNCTION_SET_SELECTED_LED_STATE} = Tinkerforge::Device->_RESPONSE_EXPECTED_FALSE;
+	$self->{response_expected}->{&FUNCTION_GET_IDENTITY} = Tinkerforge::Device->_RESPONSE_EXPECTED_ALWAYS_TRUE;
 
-    $self->{super}->{api_version} = $self->{api_version};
+	$self->{callback_formats}->{&CALLBACK_STATE_CHANGED} = 'C C C C';
 
-    bless($self, $class);
+	bless($self, $class);
 
-    return $self;
+	return $self;
 }
+
+
+=item set_led_state()
+
+Sets the state of the LEDs. Possible states are:
+
+* 0 = AutoToggleOn: Enables auto toggle with initially enabled LED.
+* 1 = AutoToggleOff: Activates auto toggle with initially disabled LED.
+* 2 = On: Enables LED (auto toggle is disabled).
+* 3 = Off: Disables LED (auto toggle is disabled).
+
+In auto toggle mode the LED is toggled automatically at each press of a button.
+
+If you just want to set one of the LEDs and don't know the current state
+of the other LED, you can get the state with :func:`GetLEDState` or you
+can use :func:`SetSelectedLEDState`.
+
+The default value is (1, 1).
+
+=cut
 
 sub set_led_state
 {
-=comment
-        Sets the state of the LEDs. Possible states are:
-        
-        * 0 = AutoToggleOn: Enables auto toggle with initially enabled LED.
-        * 1 = AutoToggleOff: Activates auto toggle with initially disabled LED.
-        * 2 = On: Enables LED (auto toggle is disabled).
-        * 3 = Off: Disables LED (auto toggle is disabled).
-        
-        In auto toggle mode the LED is toggled automatically at each press of a button.
-        
-        If you just want to set one of the LEDs and don't know the current state
-        of the other LED, you can get the state with :func:`GetLEDState` or you
-        can use :func:`SetSelectedLEDState`.
-        
-        The default value is (1, 1).
-=cut
-    lock($Tinkerforge::Device::DEVICE_LOCK);
+	my ($self, $led_l, $led_r) = @_;
 
-    my ($self, $led_l, $led_r) = @_;
-
-    $self->{super}->send_request($self, &FUNCTION_SET_LED_STATE, [$led_l, $led_r], 'C C', '');
+	$self->_send_request(&FUNCTION_SET_LED_STATE, [$led_l, $led_r], 'C C', '');
 }
+
+=item get_led_state()
+
+Returns the current state of the LEDs, as set by :func:`SetLEDState`.
+
+=cut
 
 sub get_led_state
 {
-=comment
-        Returns the current state of the LEDs, as set by :func:`SetLEDState`.
+	my ($self) = @_;
+
+	return $self->_send_request(&FUNCTION_GET_LED_STATE, [], '', 'C C');
+}
+
+=item get_button_state()
+
+Returns the current state for both buttons. Possible states are:
+
+* 0 = pressed
+* 1 = released
+
 =cut
-    lock($Tinkerforge::Device::DEVICE_LOCK);
-
-    my ($self) = @_;
-
-    return $self->{super}->send_request($self, &FUNCTION_GET_LED_STATE, [], '', 'C C');
- }
 
 sub get_button_state
 {
-=comment
-        Returns the current state for both buttons. Possible states are:
-        
-        * 0 = pressed
-        * 1 = released
+	my ($self) = @_;
+
+	return $self->_send_request(&FUNCTION_GET_BUTTON_STATE, [], '', 'C C');
+}
+
+=item set_selected_led_state()
+
+Sets the state of the selected LED (0 or 1). 
+
+The other LED remains untouched.
+
 =cut
-    lock($Tinkerforge::Device::DEVICE_LOCK);
-
-    my ($self) = @_;
-
-    return $self->{super}->send_request($self, &FUNCTION_GET_BUTTON_STATE, [], '', 'C C');
- }
 
 sub set_selected_led_state
 {
-=comment
-        Sets the state of the selected LED (0 or 1). 
-        
-        The other LED remains untouched.
-        
-        .. versionadded:: 2.0.0~(Plugin)
-=cut
-    lock($Tinkerforge::Device::DEVICE_LOCK);
+	my ($self, $led, $state) = @_;
 
-    my ($self, $led, $state) = @_;
-
-    $self->{super}->send_request($self, &FUNCTION_SET_SELECTED_LED_STATE, [$led, $state], 'C C', '');
+	$self->_send_request(&FUNCTION_SET_SELECTED_LED_STATE, [$led, $state], 'C C', '');
 }
+
+=item get_identity()
+
+Returns the UID, the UID where the Bricklet is connected to, 
+the position, the hardware and firmware version as well as the
+device identifier.
+
+The position can be 'a', 'b', 'c' or 'd'.
+
+The device identifier numbers can be found :ref:`here <device_identifier>`.
+|device_identifier_constant|
+
+=cut
 
 sub get_identity
 {
-=comment
-        Returns the UID, the UID where the Bricklet is connected to, 
-        the position, the hardware and firmware version as well as the
-        device identifier.
-        
-        The position can be 'a', 'b', 'c' or 'd'.
-        
-        The device identifier numbers can be found :ref:`here <device_identifier>`.
-        |device_identifier_constant|
-        
-        .. versionadded:: 2.0.0~(Plugin)
-=cut
-    lock($Tinkerforge::Device::DEVICE_LOCK);
+	my ($self) = @_;
 
-    my ($self) = @_;
-
-    return $self->{super}->send_request($self, &FUNCTION_GET_IDENTITY, [], '', 'Z8 Z8 a C3 C3 S');
- }
-
-
-sub register_callback
-{
-=comment
-        Registers a callback with ID *id* to the function *callback*.
-=cut
-    lock($Tinkerforge::Device::DEVICE_LOCK);
-
-    my ($self, $id, $callback) = @_;
-
-    $self->{super}->{registered_callbacks}->{$id} = '&'.caller.'::'.$callback;
+	return $self->_send_request(&FUNCTION_GET_IDENTITY, [], '', 'Z8 Z8 a C3 C3 S');
 }
-
-sub get_api_version
-{
-=comment
-        Returns the API version (major, minor, revision) of the bindings for
-        this device.
+=back
 =cut
-    my ($self) = @_;
-
-    return $self->{super}->{api_version};
-}
-
-sub get_response_expected
-{
-=comment
-        Returns the response expected flag for the function specified by the
-        *function_id* parameter. It is *true* if the function is expected to
-        send a response, *false* otherwise.
-
-        For getter functions this is enabled by default and cannot be disabled,
-        because those functions will always send a response. For callback
-        configuration functions it is enabled by default too, but can be
-        disabled via the set_response_expected function. For setter functions
-        it is disabled by default and can be enabled.
-
-        Enabling the response expected flag for a setter function allows to
-        detect timeouts and other error conditions calls of this setter as
-        well. The device will then send a response for this purpose. If this
-        flag is disabled for a setter function then no response is send and
-        errors are silently ignored, because they cannot be detected.
-=cut
-    lock($Tinkerforge::Device::DEVICE_LOCK);
-
-    my ($self, $function_id) = @_;
-
-    if(defined($self->{response_expected}->{$function_id}))
-    {
-        if($self->{response_expected}->{$function_id} == Tinkerforge::Device->RESPONSE_EXPECTED_ALWAYS_TRUE ||
-           $self->{response_expected}->{$function_id} == Tinkerforge::Device->RESPONSE_EXPECTED_TRUE)
-        {
-            return 1;
-        }
-        else
-        {
-            return 0;
-        }
-    }
-    else
-    {
-        croak(Tinkerforge::Error->new(Tinkerforge::IPConnection->ERROR_INVALID_FUNCTION_ID, "Function ID $function_id is unknown"));
-    }
-}
-
-sub set_response_expected
-{
-=comment
-        Changes the response expected flag of the function specified by the
-        *function_id* parameter. This flag can only be changed for setter
-        (default value: *false*) and callback configuration functions
-        (default value: *true*). For getter functions it is always enabled
-        and callbacks it is always disabled.
-
-        Enabling the response expected flag for a setter function allows to
-        detect timeouts and other error conditions calls of this setter as
-        well. The device will then send a response for this purpose. If this
-        flag is disabled for a setter function then no response is send and
-        errors are silently ignored, because they cannot be detected.
-=cut
-    lock($Tinkerforge::Device::DEVICE_LOCK);
-
-    my ($self, $function_id, $response_expected) = @_;
-
-    if(defined($self->{response_expected}->{$function_id}))
-    {
-        if($response_expected)
-        {
-            $self->{response_expected}->{$function_id} = Tinkerforge::Device->RESPONSE_EXPECTED_TRUE;
-        }
-        else
-        {  
-            $self->{response_expected}->{$function_id} = Tinkerforge::Device->RESPONSE_EXPECTED_FALSE;
-        }
-    }
-    else
-    {
-        croak(Tinkerforge::Error->new(Tinkerforge::IPConnection->ERROR_INVALID_FUNCTION_ID, "Function ID $function_id is unknown"));
-    }
-}
-
-sub set_response_expected_all
-{
-=comment
-        Changes the response expected flag for all setter and callback
-        configuration functions of this device at once.
-=cut
-    lock($Tinkerforge::Device::DEVICE_LOCK);
-
-    my ($self, $response_expected) = @_;
-
-    foreach my $key (sort keys $self->{response_expected})
-    {
-        if($response_expected)
-        {
-            $self->{response_expected}->{$key} = Tinkerforge::Device->RESPONSE_EXPECTED_TRUE;
-        }
-        else
-        {
-            $self->{response_expected}->{$key} = Tinkerforge::Device->RESPONSE_EXPECTED_FALSE;
-        }
-    }
-}
 
 1;

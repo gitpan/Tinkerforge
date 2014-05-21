@@ -3,21 +3,23 @@ abstract: 'Official Perl support for all Tinkerforge Bricks and Bricklets'
 author:
   - 'Ishraq Ibne Ashraf <ishraq@tinkerforge.com>'
 build_requires:
-  Test::More: 0
+  Test::More: '0'
 configure_requires:
-  ExtUtils::MakeMaker: 0
+  ExtUtils::MakeMaker: '0'
 dynamic_config: 1
-generated_by: 'ExtUtils::MakeMaker version 6.82, CPAN::Meta::Converter version 2.132830'
+generated_by: 'ExtUtils::MakeMaker version 6.98, CPAN::Meta::Converter version 2.120921'
 license: unknown
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
-  version: 1.4
+  version: '1.4'
 name: Tinkerforge
 no_index:
   directory:
     - t
     - inc
 requires:
-  Test::More: 0
-  Thread::Queue: 3.02
-version: v2.0.1
+  IO::Socket::INET: '0'
+  Test::More: '0'
+  Thread::Queue: '3.02'
+  Thread::Semaphore: '0'
+version: v2.1.0

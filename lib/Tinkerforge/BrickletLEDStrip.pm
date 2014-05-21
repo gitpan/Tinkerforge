@@ -1,366 +1,349 @@
 
 #############################################################
-# This file was automatically generated on 2014-02-24.      #
+# This file was automatically generated on 2014-05-21.      #
 #                                                           #
-# Bindings Version 2.0.1                                    #
+# Bindings Version 2.1.0                                    #
 #                                                           #
 # If you have a bugfix for this file and want to commit it, #
 # please fix the bug in the generator. You can find a link  #
 # to the generator git on tinkerforge.com                   #
 #############################################################
 
-package Tinkerforge::BrickletLEDStrip;
-=comment
-        Device to control up to 320 RGB LEDs
+=pod
+
+=encoding utf8
+
+=head1 NAME
+
+Tinkerforge::BrickletLEDStrip - Device to control up to 320 RGB LEDs
+
 =cut
 
-use Tinkerforge::Device;
-use Tinkerforge::IPConnection;
-use Tinkerforge::Error;
+package Tinkerforge::BrickletLEDStrip;
+
 use strict;
 use warnings;
 use Carp;
 use threads;
 use threads::shared;
+use parent 'Tinkerforge::Device';
+use Tinkerforge::IPConnection;
+use Tinkerforge::Error;
+
+=head1 CONSTANTS
+
+=over
+
+=item DEVICE_IDENTIFIER
+
+This constant is used to identify a LED Strip Bricklet.
+
+The get_identity() subroutine and the CALLBACK_ENUMERATE callback of the
+IP Connection have a device_identifier parameter to specify the Brick's or
+Bricklet's type.
+
+=cut
 
 use constant DEVICE_IDENTIFIER => 231;
+
+=item CALLBACK_FRAME_RENDERED
+
+This constant is used with the register_callback() subroutine to specify
+the CALLBACK_FRAME_RENDERED callback.
+
+=cut
+
 use constant CALLBACK_FRAME_RENDERED => 6;
 
+=item FUNCTION_SET_RGB_VALUES
+
+This constant is used with the get_response_expected(), set_response_expected()
+and set_response_expected_all() subroutines.
+
+=cut
+
 use constant FUNCTION_SET_RGB_VALUES => 1;
+
+=item FUNCTION_GET_RGB_VALUES
+
+This constant is used with the get_response_expected(), set_response_expected()
+and set_response_expected_all() subroutines.
+
+=cut
+
 use constant FUNCTION_GET_RGB_VALUES => 2;
+
+=item FUNCTION_SET_FRAME_DURATION
+
+This constant is used with the get_response_expected(), set_response_expected()
+and set_response_expected_all() subroutines.
+
+=cut
+
 use constant FUNCTION_SET_FRAME_DURATION => 3;
+
+=item FUNCTION_GET_FRAME_DURATION
+
+This constant is used with the get_response_expected(), set_response_expected()
+and set_response_expected_all() subroutines.
+
+=cut
+
 use constant FUNCTION_GET_FRAME_DURATION => 4;
+
+=item FUNCTION_GET_SUPPLY_VOLTAGE
+
+This constant is used with the get_response_expected(), set_response_expected()
+and set_response_expected_all() subroutines.
+
+=cut
+
 use constant FUNCTION_GET_SUPPLY_VOLTAGE => 5;
+
+=item FUNCTION_SET_CLOCK_FREQUENCY
+
+This constant is used with the get_response_expected(), set_response_expected()
+and set_response_expected_all() subroutines.
+
+=cut
+
 use constant FUNCTION_SET_CLOCK_FREQUENCY => 7;
+
+=item FUNCTION_GET_CLOCK_FREQUENCY
+
+This constant is used with the get_response_expected(), set_response_expected()
+and set_response_expected_all() subroutines.
+
+=cut
+
 use constant FUNCTION_GET_CLOCK_FREQUENCY => 8;
+
+=item FUNCTION_GET_IDENTITY
+
+This constant is used with the get_response_expected(), set_response_expected()
+and set_response_expected_all() subroutines.
+
+=cut
+
 use constant FUNCTION_GET_IDENTITY => 255;
 
 
+=back
+
+=head1 FUNCTIONS
+
+=over
+
+=item new()
+
+Creates an object with the unique device ID *uid* and adds it to
+the IP Connection *ipcon*.
+
+=cut
+
 sub new
 {
-=comment
-        Creates an object with the unique device ID *uid* and adds it to
-        the IP Connection *ipcon*.
-=cut
-    my ($class, $uid, $ipcon) = @_;
+	my ($class, $uid, $ipcon) = @_;
 
-    my $self :shared = shared_clone({super => shared_clone(Tinkerforge::Device->new($uid, $ipcon)),
-                                     api_version => [2, 0, 1],
-                                     response_expected => shared_clone({&FUNCTION_SET_RGB_VALUES => Tinkerforge::Device->RESPONSE_EXPECTED_FALSE,
-                                                                        &FUNCTION_GET_RGB_VALUES => Tinkerforge::Device->RESPONSE_EXPECTED_ALWAYS_TRUE,
-                                                                        &FUNCTION_SET_FRAME_DURATION => Tinkerforge::Device->RESPONSE_EXPECTED_FALSE,
-                                                                        &FUNCTION_GET_FRAME_DURATION => Tinkerforge::Device->RESPONSE_EXPECTED_ALWAYS_TRUE,
-                                                                        &FUNCTION_GET_SUPPLY_VOLTAGE => Tinkerforge::Device->RESPONSE_EXPECTED_ALWAYS_TRUE,
-                                                                        &CALLBACK_FRAME_RENDERED => Tinkerforge::Device->RESPONSE_EXPECTED_ALWAYS_FALSE,
-                                                                        &FUNCTION_SET_CLOCK_FREQUENCY => Tinkerforge::Device->RESPONSE_EXPECTED_FALSE,
-                                                                        &FUNCTION_GET_CLOCK_FREQUENCY => Tinkerforge::Device->RESPONSE_EXPECTED_ALWAYS_TRUE,
-                                                                        &FUNCTION_GET_IDENTITY => Tinkerforge::Device->RESPONSE_EXPECTED_ALWAYS_TRUE}),
-                                    callback_formats => shared_clone({                                                                      &CALLBACK_FRAME_RENDERED => 'S'})});
+	my $self = Tinkerforge::Device->_new($uid, $ipcon, [2, 0, 1]);
 
-    $self->{super}->{ipcon}->{devices}->{$self->{super}->{uid}} = $self;
+	$self->{response_expected}->{&FUNCTION_SET_RGB_VALUES} = Tinkerforge::Device->_RESPONSE_EXPECTED_FALSE;
+	$self->{response_expected}->{&FUNCTION_GET_RGB_VALUES} = Tinkerforge::Device->_RESPONSE_EXPECTED_ALWAYS_TRUE;
+	$self->{response_expected}->{&FUNCTION_SET_FRAME_DURATION} = Tinkerforge::Device->_RESPONSE_EXPECTED_FALSE;
+	$self->{response_expected}->{&FUNCTION_GET_FRAME_DURATION} = Tinkerforge::Device->_RESPONSE_EXPECTED_ALWAYS_TRUE;
+	$self->{response_expected}->{&FUNCTION_GET_SUPPLY_VOLTAGE} = Tinkerforge::Device->_RESPONSE_EXPECTED_ALWAYS_TRUE;
+	$self->{response_expected}->{&CALLBACK_FRAME_RENDERED} = Tinkerforge::Device->_RESPONSE_EXPECTED_ALWAYS_FALSE;
+	$self->{response_expected}->{&FUNCTION_SET_CLOCK_FREQUENCY} = Tinkerforge::Device->_RESPONSE_EXPECTED_FALSE;
+	$self->{response_expected}->{&FUNCTION_GET_CLOCK_FREQUENCY} = Tinkerforge::Device->_RESPONSE_EXPECTED_ALWAYS_TRUE;
+	$self->{response_expected}->{&FUNCTION_GET_IDENTITY} = Tinkerforge::Device->_RESPONSE_EXPECTED_ALWAYS_TRUE;
 
-    $self->{super}->{api_version} = $self->{api_version};
+	$self->{callback_formats}->{&CALLBACK_FRAME_RENDERED} = 'S';
 
-    bless($self, $class);
+	bless($self, $class);
 
-    return $self;
+	return $self;
 }
+
+
+=item set_rgb_values()
+
+Sets the *rgb* values for the LEDs with the given *length* starting 
+from *index*.
+
+The maximum length is 16, the index goes from 0 to 319 and the rgb values
+have 8 bits each.
+
+Example: If you set
+
+* index to 5,
+* length to 3,
+* r to [255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+* g to [0, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] and
+* b to [0, 0, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
+the LED with index 5 will be red, 6 will be green and 7 will be blue.
+
+.. note:: Depending on the LED circuitry colors can be permuted.
+
+The colors will be transfered to actual LEDs when the next
+frame duration ends, see :func:`SetFrameDuration`.
+
+Generic approach: 
+
+* Set the frame duration to a value that represents
+  the number of frames per second you want to achieve. 
+* Set all of the LED colors for one frame.
+* Wait for the :func:`FrameRendered` callback.
+* Set all of the LED colors for next frame.
+* Wait for the :func:`FrameRendered` callback.
+* and so on.
+
+This approach ensures that you can change the LED colors with
+a fixed frame rate.
+
+The actual number of controllable LEDs depends on the number of free
+Bricklet ports. See :ref:`here <led_strip_bricklet_ram_constraints>` for more
+information. A call of :func:`SetRGBValues` with index + length above the
+bounds is ignored completely.
+
+=cut
 
 sub set_rgb_values
 {
-=comment
-        Sets the *rgb* values for the LEDs with the given *length* starting 
-        from *index*.
-        
-        The maximum length is 16, the index goes from 0 to 319 and the rgb values
-        have 8 bits each.
-        
-        Example: If you set
-        
-        * index to 5,
-        * length to 3,
-        * r to [255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        * g to [0, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] and
-        * b to [0, 0, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        
-        the LED with index 5 will be red, 6 will be green and 7 will be blue.
-        
-        .. note:: Depending on the LED circuitry colors can be permuted.
-        
-        The colors will be transfered to actual LEDs when the next
-        frame duration ends, see :func:`SetFrameDuration`.
-        
-        Generic approach: 
-        
-        * Set the frame duration to a value that represents
-          the number of frames per second you want to achieve. 
-        * Set all of the LED colors for one frame.
-        * Wait for the :func:`FrameRendered` callback.
-        * Set all of the LED colors for next frame.
-        * Wait for the :func:`FrameRendered` callback.
-        * and so on.
-        
-        This approach ensures that you can change the LED colors with
-        a fixed frame rate.
-        
-        The actual number of controllable LEDs depends on the number of free
-        Bricklet ports. See :ref:`here <led_strip_bricklet_ram_constraints>` for more
-        information. A call of :func:`SetRGBValues` with index + length above the
-        bounds is ignored completely.
-=cut
-    lock($Tinkerforge::Device::DEVICE_LOCK);
+	my ($self, $index, $length, $r, $g, $b) = @_;
 
-    my ($self, $index, $length, $r, $g, $b) = @_;
-
-    $self->{super}->send_request($self, &FUNCTION_SET_RGB_VALUES, [$index, $length, $r, $g, $b], 'S C C16 C16 C16', '');
+	$self->_send_request(&FUNCTION_SET_RGB_VALUES, [$index, $length, $r, $g, $b], 'S C C16 C16 C16', '');
 }
+
+=item get_rgb_values()
+
+Returns the rgb with the given *length* starting from the
+given *index*.
+
+The values are the last values that were set by :func:`SetRGBValues`.
+
+=cut
 
 sub get_rgb_values
 {
-=comment
-        Returns the rgb with the given *length* starting from the
-        given *index*.
-        
-        The values are the last values that were set by :func:`SetRGBValues`.
+	my ($self, $index, $length) = @_;
+
+	return $self->_send_request(&FUNCTION_GET_RGB_VALUES, [$index, $length], 'S C', 'C16 C16 C16');
+}
+
+=item set_frame_duration()
+
+Sets the frame duration in ms.
+
+Example: If you want to achieve 20 frames per second, you should
+set the frame duration to 50ms (50ms * 20 = 1 second). 
+
+For an explanation of the general approach see :func:`SetRGBValues`.
+
+Default value: 100ms (10 frames per second).
+
 =cut
-    lock($Tinkerforge::Device::DEVICE_LOCK);
-
-    my ($self, $index, $length) = @_;
-
-    return $self->{super}->send_request($self, &FUNCTION_GET_RGB_VALUES, [$index, $length], 'S C', 'C16 C16 C16');
- }
 
 sub set_frame_duration
 {
-=comment
-        Sets the frame duration in ms.
-        
-        Example: If you want to achieve 20 frames per second, you should
-        set the frame duration to 50ms (50ms * 20 = 1 second). 
-        
-        For an explanation of the general approach see :func:`SetRGBValues`.
-        
-        Default value: 100ms (10 frames per second).
-=cut
-    lock($Tinkerforge::Device::DEVICE_LOCK);
+	my ($self, $duration) = @_;
 
-    my ($self, $duration) = @_;
-
-    $self->{super}->send_request($self, &FUNCTION_SET_FRAME_DURATION, [$duration], 'S', '');
+	$self->_send_request(&FUNCTION_SET_FRAME_DURATION, [$duration], 'S', '');
 }
+
+=item get_frame_duration()
+
+Returns the frame duration as set by :func:`SetFrameDuration`.
+
+=cut
 
 sub get_frame_duration
 {
-=comment
-        Returns the frame duration as set by :func:`SetFrameDuration`.
-=cut
-    lock($Tinkerforge::Device::DEVICE_LOCK);
+	my ($self) = @_;
 
-    my ($self) = @_;
-
-    return $self->{super}->send_request($self, &FUNCTION_GET_FRAME_DURATION, [], '', 'S');
+	return $self->_send_request(&FUNCTION_GET_FRAME_DURATION, [], '', 'S');
 }
+
+=item get_supply_voltage()
+
+Returns the current supply voltage of the LEDs. The voltage is given in mV.
+
+=cut
 
 sub get_supply_voltage
 {
-=comment
-        Returns the current supply voltage of the LEDs. The voltage is given in mV.
-=cut
-    lock($Tinkerforge::Device::DEVICE_LOCK);
+	my ($self) = @_;
 
-    my ($self) = @_;
-
-    return $self->{super}->send_request($self, &FUNCTION_GET_SUPPLY_VOLTAGE, [], '', 'S');
+	return $self->_send_request(&FUNCTION_GET_SUPPLY_VOLTAGE, [], '', 'S');
 }
+
+=item set_clock_frequency()
+
+Sets the frequency of the clock in Hz. The range is 10000Hz (10kHz) up to
+2000000Hz (2MHz).
+
+The Bricklet will choose the nearest achievable frequency, which may
+be off by a few Hz. You can get the exact frequency that is used by
+calling :func:`GetClockFrequency`.
+
+If you have problems with flickering LEDs, they may be bits flipping. You
+can fix this by either making the connection between the LEDs and the
+Bricklet shorter or by reducing the frequency.
+
+With a decreasing frequency your maximum frames per second will decrease
+too.
+
+The default value is 1.66MHz.
+
+.. note::
+ The frequency in firmware version 2.0.0 is fixed at 2MHz.
+
+.. versionadded:: 2.0.1~(Plugin)
+
+=cut
 
 sub set_clock_frequency
 {
-=comment
-        Sets the frequency of the clock in Hz. The range is 10000Hz (10kHz) up to
-        2000000Hz (2MHz).
-        
-        The Bricklet will choose the nearest achievable frequency, which may
-        be off by a few Hz. You can get the exact frequency that is used by
-        calling :func:`GetClockFrequency`.
-        
-        If you have problems with flickering LEDs, they may be bits flipping. You
-        can fix this by either making the connection between the LEDs and the
-        Bricklet shorter or by reducing the frequency.
-        
-        With a decreasing frequency your maximum frames per second will decrease
-        too.
-        
-        The default value is 1.66MHz.
-        
-        .. note::
-         The frequency in firmware version 2.0.0 is fixed at 2MHz.
-        
-        .. versionadded:: 2.0.1~(Plugin)
-=cut
-    lock($Tinkerforge::Device::DEVICE_LOCK);
+	my ($self, $frequency) = @_;
 
-    my ($self, $frequency) = @_;
-
-    $self->{super}->send_request($self, &FUNCTION_SET_CLOCK_FREQUENCY, [$frequency], 'L', '');
+	$self->_send_request(&FUNCTION_SET_CLOCK_FREQUENCY, [$frequency], 'L', '');
 }
+
+=item get_clock_frequency()
+
+Returns the currently used clock frequency.
+
+.. versionadded:: 2.0.1~(Plugin)
+
+=cut
 
 sub get_clock_frequency
 {
-=comment
-        Returns the currently used clock frequency.
-        
-        .. versionadded:: 2.0.1~(Plugin)
-=cut
-    lock($Tinkerforge::Device::DEVICE_LOCK);
+	my ($self) = @_;
 
-    my ($self) = @_;
-
-    return $self->{super}->send_request($self, &FUNCTION_GET_CLOCK_FREQUENCY, [], '', 'L');
+	return $self->_send_request(&FUNCTION_GET_CLOCK_FREQUENCY, [], '', 'L');
 }
+
+=item get_identity()
+
+Returns the UID, the UID where the Bricklet is connected to, 
+the position, the hardware and firmware version as well as the
+device identifier.
+
+The position can be 'a', 'b', 'c' or 'd'.
+
+The device identifier numbers can be found :ref:`here <device_identifier>`.
+|device_identifier_constant|
+
+=cut
 
 sub get_identity
 {
-=comment
-        Returns the UID, the UID where the Bricklet is connected to, 
-        the position, the hardware and firmware version as well as the
-        device identifier.
-        
-        The position can be 'a', 'b', 'c' or 'd'.
-        
-        The device identifier numbers can be found :ref:`here <device_identifier>`.
-        |device_identifier_constant|
-        
-        .. versionadded:: 2.0.0~(Plugin)
-=cut
-    lock($Tinkerforge::Device::DEVICE_LOCK);
+	my ($self) = @_;
 
-    my ($self) = @_;
-
-    return $self->{super}->send_request($self, &FUNCTION_GET_IDENTITY, [], '', 'Z8 Z8 a C3 C3 S');
- }
-
-
-sub register_callback
-{
-=comment
-        Registers a callback with ID *id* to the function *callback*.
-=cut
-    lock($Tinkerforge::Device::DEVICE_LOCK);
-
-    my ($self, $id, $callback) = @_;
-
-    $self->{super}->{registered_callbacks}->{$id} = '&'.caller.'::'.$callback;
+	return $self->_send_request(&FUNCTION_GET_IDENTITY, [], '', 'Z8 Z8 a C3 C3 S');
 }
-
-sub get_api_version
-{
-=comment
-        Returns the API version (major, minor, revision) of the bindings for
-        this device.
+=back
 =cut
-    my ($self) = @_;
-
-    return $self->{super}->{api_version};
-}
-
-sub get_response_expected
-{
-=comment
-        Returns the response expected flag for the function specified by the
-        *function_id* parameter. It is *true* if the function is expected to
-        send a response, *false* otherwise.
-
-        For getter functions this is enabled by default and cannot be disabled,
-        because those functions will always send a response. For callback
-        configuration functions it is enabled by default too, but can be
-        disabled via the set_response_expected function. For setter functions
-        it is disabled by default and can be enabled.
-
-        Enabling the response expected flag for a setter function allows to
-        detect timeouts and other error conditions calls of this setter as
-        well. The device will then send a response for this purpose. If this
-        flag is disabled for a setter function then no response is send and
-        errors are silently ignored, because they cannot be detected.
-=cut
-    lock($Tinkerforge::Device::DEVICE_LOCK);
-
-    my ($self, $function_id) = @_;
-
-    if(defined($self->{response_expected}->{$function_id}))
-    {
-        if($self->{response_expected}->{$function_id} == Tinkerforge::Device->RESPONSE_EXPECTED_ALWAYS_TRUE ||
-           $self->{response_expected}->{$function_id} == Tinkerforge::Device->RESPONSE_EXPECTED_TRUE)
-        {
-            return 1;
-        }
-        else
-        {
-            return 0;
-        }
-    }
-    else
-    {
-        croak(Tinkerforge::Error->new(Tinkerforge::IPConnection->ERROR_INVALID_FUNCTION_ID, "Function ID $function_id is unknown"));
-    }
-}
-
-sub set_response_expected
-{
-=comment
-        Changes the response expected flag of the function specified by the
-        *function_id* parameter. This flag can only be changed for setter
-        (default value: *false*) and callback configuration functions
-        (default value: *true*). For getter functions it is always enabled
-        and callbacks it is always disabled.
-
-        Enabling the response expected flag for a setter function allows to
-        detect timeouts and other error conditions calls of this setter as
-        well. The device will then send a response for this purpose. If this
-        flag is disabled for a setter function then no response is send and
-        errors are silently ignored, because they cannot be detected.
-=cut
-    lock($Tinkerforge::Device::DEVICE_LOCK);
-
-    my ($self, $function_id, $response_expected) = @_;
-
-    if(defined($self->{response_expected}->{$function_id}))
-    {
-        if($response_expected)
-        {
-            $self->{response_expected}->{$function_id} = Tinkerforge::Device->RESPONSE_EXPECTED_TRUE;
-        }
-        else
-        {  
-            $self->{response_expected}->{$function_id} = Tinkerforge::Device->RESPONSE_EXPECTED_FALSE;
-        }
-    }
-    else
-    {
-        croak(Tinkerforge::Error->new(Tinkerforge::IPConnection->ERROR_INVALID_FUNCTION_ID, "Function ID $function_id is unknown"));
-    }
-}
-
-sub set_response_expected_all
-{
-=comment
-        Changes the response expected flag for all setter and callback
-        configuration functions of this device at once.
-=cut
-    lock($Tinkerforge::Device::DEVICE_LOCK);
-
-    my ($self, $response_expected) = @_;
-
-    foreach my $key (sort keys $self->{response_expected})
-    {
-        if($response_expected)
-        {
-            $self->{response_expected}->{$key} = Tinkerforge::Device->RESPONSE_EXPECTED_TRUE;
-        }
-        else
-        {
-            $self->{response_expected}->{$key} = Tinkerforge::Device->RESPONSE_EXPECTED_FALSE;
-        }
-    }
-}
 
 1;

@@ -9,3 +9,7 @@
        Make IPConnection locks proper members of the class instance
        Make Brick and Bricklet classes proper subclasses of Device
        Don't overwrite auto_reconnect option in set_timeout function
+2.1.1: Add support for WS2811 and WS2812 to LED Strip Bricklet API
+2.1.2: Add support for Color, NFC/RFID and Solid State Relay Bricklet
+       Only use MSG_NOSIGNAL if it's really defined
+       Remove CPAN package from ZIP file, include relevant files into the source/ folder

@@ -1,8 +1,8 @@
 
 #############################################################
-# This file was automatically generated on 2014-05-21.      #
+# This file was automatically generated on 2014-08-11.      #
 #                                                           #
-# Bindings Version 2.1.0                                    #
+# Bindings Version 2.1.2                                    #
 #                                                           #
 # If you have a bugfix for this file and want to commit it, #
 # please fix the bug in the generator. You can find a link  #
@@ -118,6 +118,24 @@ and set_response_expected_all() subroutines.
 
 use constant FUNCTION_GET_CLOCK_FREQUENCY => 8;
 
+=item FUNCTION_SET_CHIP_TYPE
+
+This constant is used with the get_response_expected(), set_response_expected()
+and set_response_expected_all() subroutines.
+
+=cut
+
+use constant FUNCTION_SET_CHIP_TYPE => 9;
+
+=item FUNCTION_GET_CHIP_TYPE
+
+This constant is used with the get_response_expected(), set_response_expected()
+and set_response_expected_all() subroutines.
+
+=cut
+
+use constant FUNCTION_GET_CHIP_TYPE => 10;
+
 =item FUNCTION_GET_IDENTITY
 
 This constant is used with the get_response_expected(), set_response_expected()
@@ -126,6 +144,9 @@ and set_response_expected_all() subroutines.
 =cut
 
 use constant FUNCTION_GET_IDENTITY => 255;
+use constant CHIP_TYPE_WS2801 => 2801;
+use constant CHIP_TYPE_WS2811 => 2811;
+use constant CHIP_TYPE_WS2812 => 2812;
 
 
 =back
@@ -145,7 +166,7 @@ sub new
 {
 	my ($class, $uid, $ipcon) = @_;
 
-	my $self = Tinkerforge::Device->_new($uid, $ipcon, [2, 0, 1]);
+	my $self = Tinkerforge::Device->_new($uid, $ipcon, [2, 0, 2]);
 
 	$self->{response_expected}->{&FUNCTION_SET_RGB_VALUES} = Tinkerforge::Device->_RESPONSE_EXPECTED_FALSE;
 	$self->{response_expected}->{&FUNCTION_GET_RGB_VALUES} = Tinkerforge::Device->_RESPONSE_EXPECTED_ALWAYS_TRUE;
@@ -155,6 +176,8 @@ sub new
 	$self->{response_expected}->{&CALLBACK_FRAME_RENDERED} = Tinkerforge::Device->_RESPONSE_EXPECTED_ALWAYS_FALSE;
 	$self->{response_expected}->{&FUNCTION_SET_CLOCK_FREQUENCY} = Tinkerforge::Device->_RESPONSE_EXPECTED_FALSE;
 	$self->{response_expected}->{&FUNCTION_GET_CLOCK_FREQUENCY} = Tinkerforge::Device->_RESPONSE_EXPECTED_ALWAYS_TRUE;
+	$self->{response_expected}->{&FUNCTION_SET_CHIP_TYPE} = Tinkerforge::Device->_RESPONSE_EXPECTED_FALSE;
+	$self->{response_expected}->{&FUNCTION_GET_CHIP_TYPE} = Tinkerforge::Device->_RESPONSE_EXPECTED_ALWAYS_TRUE;
 	$self->{response_expected}->{&FUNCTION_GET_IDENTITY} = Tinkerforge::Device->_RESPONSE_EXPECTED_ALWAYS_TRUE;
 
 	$self->{callback_formats}->{&CALLBACK_FRAME_RENDERED} = 'S';
@@ -311,7 +334,7 @@ sub set_clock_frequency
 
 =item get_clock_frequency()
 
-Returns the currently used clock frequency.
+Returns the currently used clock frequency as set by :func:`SetClockFrequency`.
 
 .. versionadded:: 2.0.1~(Plugin)
 
@@ -322,6 +345,46 @@ sub get_clock_frequency
 	my ($self) = @_;
 
 	return $self->_send_request(&FUNCTION_GET_CLOCK_FREQUENCY, [], '', 'L');
+}
+
+=item set_chip_type()
+
+Sets the type of the led driver chip. We currently support
+the chips
+
+* WS2801,
+* WS2811 and
+* WS2812.
+
+The WS2812 is sometimes also called "NeoPixel", a name coined by
+Adafruit.
+
+The default value is WS2801 = 2801.
+
+.. versionadded:: 2.0.2~(Plugin)
+
+=cut
+
+sub set_chip_type
+{
+	my ($self, $chip) = @_;
+
+	$self->_send_request(&FUNCTION_SET_CHIP_TYPE, [$chip], 'S', '');
+}
+
+=item get_chip_type()
+
+Returns the currently used chip type as set by :func:`SetChipType`.
+
+.. versionadded:: 2.0.2~(Plugin)
+
+=cut
+
+sub get_chip_type
+{
+	my ($self) = @_;
+
+	return $self->_send_request(&FUNCTION_GET_CHIP_TYPE, [], '', 'S');
 }
 
 =item get_identity()

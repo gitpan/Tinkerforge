@@ -6,6 +6,7 @@ lib/Tinkerforge/BrickletAmbientLight.pm
 lib/Tinkerforge/BrickletAnalogIn.pm
 lib/Tinkerforge/BrickletAnalogOut.pm
 lib/Tinkerforge/BrickletBarometer.pm
+lib/Tinkerforge/BrickletColor.pm
 lib/Tinkerforge/BrickletCurrent12.pm
 lib/Tinkerforge/BrickletCurrent25.pm
 lib/Tinkerforge/BrickletDistanceIR.pm
@@ -30,6 +31,7 @@ lib/Tinkerforge/BrickletLinearPoti.pm
 lib/Tinkerforge/BrickletMoisture.pm
 lib/Tinkerforge/BrickletMotionDetector.pm
 lib/Tinkerforge/BrickletMultiTouch.pm
+lib/Tinkerforge/BrickletNFCRFID.pm
 lib/Tinkerforge/BrickletPiezoBuzzer.pm
 lib/Tinkerforge/BrickletPiezoSpeaker.pm
 lib/Tinkerforge/BrickletPTC.pm
@@ -37,6 +39,7 @@ lib/Tinkerforge/BrickletRemoteSwitch.pm
 lib/Tinkerforge/BrickletRotaryEncoder.pm
 lib/Tinkerforge/BrickletRotaryPoti.pm
 lib/Tinkerforge/BrickletSegmentDisplay4x7.pm
+lib/Tinkerforge/BrickletSolidStateRelay.pm
 lib/Tinkerforge/BrickletSoundIntensity.pm
 lib/Tinkerforge/BrickletTemperature.pm
 lib/Tinkerforge/BrickletTemperatureIR.pm

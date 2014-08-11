@@ -1,8 +1,8 @@
 
 #############################################################
-# This file was automatically generated on 2014-05-21.      #
+# This file was automatically generated on 2014-08-11.      #
 #                                                           #
-# Bindings Version 2.1.0                                    #
+# Bindings Version 2.1.2                                    #
 #                                                           #
 # If you have a bugfix for this file and want to commit it, #
 # please fix the bug in the generator. You can find a link  #
@@ -304,6 +304,8 @@ For example:
 * ('a', 128, 'i', false) or ('a', 0b10000000, 'i', false) will set pin 7 of port A as input default (floating if nothing is connected).
 * ('b', 3, 'o', false) or ('b', 0b00000011, 'o', false) will set pins 0 and 1 of port B as output low.
 * ('b', 4, 'o', true) or ('b', 0b00000100, 'o', true) will set pin 2 of port B as output high.
+
+The default configuration is input with pull-up.
 
 =cut
 

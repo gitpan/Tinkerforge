@@ -4,7 +4,7 @@
       "Ishraq Ibne Ashraf <ishraq@tinkerforge.com>"
    ],
    "dynamic_config" : 1,
-   "generated_by" : "ExtUtils::MakeMaker version 6.98, CPAN::Meta::Converter version 2.120921",
+   "generated_by" : "ExtUtils::MakeMaker version 6.66, CPAN::Meta::Converter version 2.133380",
    "license" : [
       "unknown"
    ],
@@ -32,13 +32,15 @@
       },
       "runtime" : {
          "requires" : {
+            "Digest::HMAC_SHA1" : "0",
             "IO::Socket::INET" : "0",
             "Test::More" : "0",
             "Thread::Queue" : "3.02",
-            "Thread::Semaphore" : "0"
+            "Thread::Semaphore" : "0",
+            "threads" : "0"
          }
       }
    },
    "release_status" : "stable",
-   "version" : "v2.1.0"
+   "version" : "v2.1.2"
 }

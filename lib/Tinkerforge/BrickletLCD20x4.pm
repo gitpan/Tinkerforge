@@ -1,8 +1,8 @@
 
 #############################################################
-# This file was automatically generated on 2014-05-21.      #
+# This file was automatically generated on 2014-08-11.      #
 #                                                           #
-# Bindings Version 2.1.0                                    #
+# Bindings Version 2.1.2                                    #
 #                                                           #
 # If you have a bugfix for this file and want to commit it, #
 # please fix the bug in the generator. You can find a link  #
@@ -385,7 +385,7 @@ a custom character "H", you should transfer the following:
 * ``character[7] = 0b00000000`` (decimal value 0)
 
 The characters can later be written with :func:`WriteLine` by using the
-characters with the byte representation 8 to 15.
+characters with the byte representation 8 ("\x08") to 15 ("\x0F").
 
 You can play around with the custom characters in Brick Viewer version
 since 2.0.1.

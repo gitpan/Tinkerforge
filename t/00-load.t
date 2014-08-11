@@ -10,7 +10,7 @@ use Test::More;
 
 
 
-plan tests => 50;
+plan tests => 53;
 
 
 
@@ -33,6 +33,8 @@ BEGIN {
     use_ok( 'Tinkerforge::BrickletAnalogOut' ) || print "Bail out!\n";
 
     use_ok( 'Tinkerforge::BrickletBarometer' ) || print "Bail out!\n";
+
+    use_ok( 'Tinkerforge::BrickletColor' ) || print "Bail out!\n";
 
     use_ok( 'Tinkerforge::BrickletCurrent12' ) || print "Bail out!\n";
 
@@ -82,6 +84,8 @@ BEGIN {
 
     use_ok( 'Tinkerforge::BrickletMultiTouch' ) || print "Bail out!\n";
 
+    use_ok( 'Tinkerforge::BrickletNFCRFID' ) || print "Bail out!\n";
+
     use_ok( 'Tinkerforge::BrickletPiezoBuzzer' ) || print "Bail out!\n";
 
     use_ok( 'Tinkerforge::BrickletPiezoSpeaker' ) || print "Bail out!\n";
@@ -95,6 +99,8 @@ BEGIN {
     use_ok( 'Tinkerforge::BrickletRotaryPoti' ) || print "Bail out!\n";
 
     use_ok( 'Tinkerforge::BrickletSegmentDisplay4x7' ) || print "Bail out!\n";
+
+    use_ok( 'Tinkerforge::BrickletSolidStateRelay' ) || print "Bail out!\n";
 
     use_ok( 'Tinkerforge::BrickletSoundIntensity' ) || print "Bail out!\n";
 

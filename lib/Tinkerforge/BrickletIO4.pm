@@ -1,8 +1,8 @@
 
 #############################################################
-# This file was automatically generated on 2014-05-21.      #
+# This file was automatically generated on 2014-08-11.      #
 #                                                           #
-# Bindings Version 2.1.0                                    #
+# Bindings Version 2.1.2                                    #
 #                                                           #
 # If you have a bugfix for this file and want to commit it, #
 # please fix the bug in the generator. You can find a link  #
@@ -304,6 +304,8 @@ For example:
 * (8, 'i', false) or (0b1000, 'i', false) will set pin 3 of as input default (floating if nothing is connected).
 * (3, 'o', false) or (0b0011, 'o', false) will set pins 0 and 1 as output low.
 * (4, 'o', true) or (0b0100, 'o', true) will set pin 2 of as output high.
+
+The default configuration is input with pull-up.
 
 =cut
 

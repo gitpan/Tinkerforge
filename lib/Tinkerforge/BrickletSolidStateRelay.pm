@@ -15,11 +15,11 @@
 
 =head1 NAME
 
-Tinkerforge::BrickletDualRelay - Device for controlling two relays
+Tinkerforge::BrickletSolidStateRelay - Device for controlling AC and DC Solid State Relays
 
 =cut
 
-package Tinkerforge::BrickletDualRelay;
+package Tinkerforge::BrickletSolidStateRelay;
 
 use strict;
 use warnings;
@@ -36,7 +36,7 @@ use Tinkerforge::Error;
 
 =item DEVICE_IDENTIFIER
 
-This constant is used to identify a Dual Relay Bricklet.
+This constant is used to identify a Solid State Relay Bricklet.
 
 The get_identity() subroutine and the CALLBACK_ENUMERATE callback of the
 IP Connection have a device_identifier parameter to specify the Brick's or
@@ -44,7 +44,7 @@ Bricklet's type.
 
 =cut
 
-use constant DEVICE_IDENTIFIER => 26;
+use constant DEVICE_IDENTIFIER => 244;
 
 =item CALLBACK_MONOFLOP_DONE
 
@@ -91,15 +91,6 @@ and set_response_expected_all() subroutines.
 
 use constant FUNCTION_GET_MONOFLOP => 4;
 
-=item FUNCTION_SET_SELECTED_STATE
-
-This constant is used with the get_response_expected(), set_response_expected()
-and set_response_expected_all() subroutines.
-
-=cut
-
-use constant FUNCTION_SET_SELECTED_STATE => 6;
-
 =item FUNCTION_GET_IDENTITY
 
 This constant is used with the get_response_expected(), set_response_expected()
@@ -134,10 +125,9 @@ sub new
 	$self->{response_expected}->{&FUNCTION_SET_MONOFLOP} = Tinkerforge::Device->_RESPONSE_EXPECTED_FALSE;
 	$self->{response_expected}->{&FUNCTION_GET_MONOFLOP} = Tinkerforge::Device->_RESPONSE_EXPECTED_ALWAYS_TRUE;
 	$self->{response_expected}->{&CALLBACK_MONOFLOP_DONE} = Tinkerforge::Device->_RESPONSE_EXPECTED_ALWAYS_FALSE;
-	$self->{response_expected}->{&FUNCTION_SET_SELECTED_STATE} = Tinkerforge::Device->_RESPONSE_EXPECTED_FALSE;
 	$self->{response_expected}->{&FUNCTION_GET_IDENTITY} = Tinkerforge::Device->_RESPONSE_EXPECTED_ALWAYS_TRUE;
 
-	$self->{callback_formats}->{&CALLBACK_MONOFLOP_DONE} = 'C C';
+	$self->{callback_formats}->{&CALLBACK_MONOFLOP_DONE} = 'C';
 
 	bless($self, $class);
 
@@ -147,29 +137,24 @@ sub new
 
 =item set_state()
 
-Sets the state of the relays, *true* means on and *false* means off. 
-For example: (true, false) turns relay 1 on and relay 2 off.
-
-If you just want to set one of the relays and don't know the current state
-of the other relay, you can get the state with :func:`GetState` or you
-can use :func:`SetSelectedState`.
+Sets the state of the relays *true* means on and *false* means off. 
 
 Running monoflop timers will be overwritten if this function is called.
 
-The default value is (*false*, *false*).
+The default value is *false*.
 
 =cut
 
 sub set_state
 {
-	my ($self, $relay1, $relay2) = @_;
+	my ($self, $state) = @_;
 
-	$self->_send_request(&FUNCTION_SET_STATE, [$relay1, $relay2], 'C C', '');
+	$self->_send_request(&FUNCTION_SET_STATE, [$state], 'C', '');
 }
 
 =item get_state()
 
-Returns the state of the relays, *true* means on and *false* means off.
+Returns the state of the relay, *true* means on and *false* means off.
 
 =cut
 
@@ -177,21 +162,20 @@ sub get_state
 {
 	my ($self) = @_;
 
-	return $self->_send_request(&FUNCTION_GET_STATE, [], '', 'C C');
+	return $self->_send_request(&FUNCTION_GET_STATE, [], '', 'C');
 }
 
 =item set_monoflop()
 
-The first parameter can be 1 or 2 (relay 1 or relay 2). The second parameter 
-is the desired state of the relay (*true* means on and *false* means off).
-The third parameter indicates the time (in ms) that the relay should hold 
-the state.
+The first parameter  is the desired state of the relay (*true* means on 
+and *false* means off). The second parameter indicates the time (in ms) that 
+the relay should hold the state.
 
-If this function is called with the parameters (1, true, 1500):
-Relay 1 will turn on and in 1.5s it will turn off again.
+If this function is called with the parameters (true, 1500):
+The relay will turn on and in 1.5s it will turn off again.
 
 A monoflop can be used as a failsafe mechanism. For example: Lets assume you 
-have a RS485 bus and a Dual Relay Bricklet connected to one of the slave 
+have a RS485 bus and a Solid State Relay Bricklet connected to one of the slave 
 stacks. You can now call this function every second, with a time parameter
 of two seconds. The relay will be on all the time. If now the RS485 
 connection is lost, the relay will turn off in at most two seconds.
@@ -200,14 +184,14 @@ connection is lost, the relay will turn off in at most two seconds.
 
 sub set_monoflop
 {
-	my ($self, $relay, $state, $time) = @_;
+	my ($self, $state, $time) = @_;
 
-	$self->_send_request(&FUNCTION_SET_MONOFLOP, [$relay, $state, $time], 'C C L', '');
+	$self->_send_request(&FUNCTION_SET_MONOFLOP, [$state, $time], 'C L', '');
 }
 
 =item get_monoflop()
 
-Returns (for the given relay) the current state and the time as set by 
+Returns the current state and the time as set by 
 :func:`SetMonoflop` as well as the remaining time until the state flips.
 
 If the timer is not running currently, the remaining time will be returned
@@ -217,24 +201,9 @@ as 0.
 
 sub get_monoflop
 {
-	my ($self, $relay) = @_;
+	my ($self) = @_;
 
-	return $self->_send_request(&FUNCTION_GET_MONOFLOP, [$relay], 'C', 'C L L');
-}
-
-=item set_selected_state()
-
-Sets the state of the selected relay (1 or 2), *true* means on and *false* means off. 
-
-The other relay remains untouched.
-
-=cut
-
-sub set_selected_state
-{
-	my ($self, $relay, $state) = @_;
-
-	$self->_send_request(&FUNCTION_SET_SELECTED_STATE, [$relay, $state], 'C C', '');
+	return $self->_send_request(&FUNCTION_GET_MONOFLOP, [], '', 'C L L');
 }
 
 =item get_identity()

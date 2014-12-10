@@ -1,8 +1,8 @@
 
 #############################################################
-# This file was automatically generated on 2014-08-11.      #
+# This file was automatically generated on 2014-12-10.      #
 #                                                           #
-# Bindings Version 2.1.2                                    #
+# Bindings Version 2.1.3                                    #
 #                                                           #
 # If you have a bugfix for this file and want to commit it, #
 # please fix the bug in the generator. You can find a link  #
@@ -194,9 +194,9 @@ the available tag types until the tag gives an answer to the request.
 
 Current the following tag types are supported:
 
-* Mifare Classic
-* NFC Forum Type 1
-* NFC Forum Type 2
+* Mifare Classic (``tag_type`` = 0)
+* NFC Forum Type 1 (``tag_type`` = 1)
+* NFC Forum Type 2 (``tag_type`` = 2)
 
 After you call :func:`RequestTagID` the NFC/RFID Bricklet will try to read 
 the tag ID from the tag. After this process is done the state will change.
@@ -251,8 +251,8 @@ sub get_tag_id
 
 Returns the current state of the NFC/RFID Bricklet.
 
-On startup the Bricklet will be in the *Initialization* state. The initialization
-will only take about 20ms. After that it changes to *Idle*.
+On startup the Bricklet will be in the *Initialization* state. The
+initialization will only take about 20ms. After that it changes to *Idle*.
 
 The functions of this Bricklet can be called in the *Idle* state and all of
 the *Ready* and *Error* states.
@@ -263,6 +263,24 @@ to either *RequestPageReady* if it worked or to *RequestPageError* if it
 didn't. If the request worked you can get the page by calling :func:`GetPage`.
 
 The same approach is used analogously for the other API functions.
+
+Possible states are:
+
+* Initialization = 0
+* Idle = 128
+* Error = 192
+* RequestTagID = 2
+* RequestTagIDReady = 130
+* RequestTagIDError = 194
+* AuthenticatingMifareClassicPage = 3
+* AuthenticatingMifareClassicPageReady = 131
+* AuthenticatingMifareClassicPageError = 195
+* WritePage = 4
+* WritePageReady = 132
+* WritePageError = 196
+* RequestPage = 5
+* RequestPageReady = 133
+* RequestPageError = 197
 
 =cut
 
@@ -277,14 +295,16 @@ sub get_state
 
 Mifare Classic tags use authentication. If you want to read from or write to
 a Mifare Classic page you have to authenticate it beforehand.
-Each page can be authenticated with two keys (A and B). A new Mifare Classic
-tag that has not yet been written to can can be accessed with key number A
-and the default key *[0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]*.
+Each page can be authenticated with two keys: A (``key_number`` = 0) and B
+(``key_number`` = 1). A new Mifare Classic
+tag that has not yet been written to can can be accessed with key A
+and the default key ``[0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]``.
 
 The approach to read or write a Mifare Classic page is as follows:
 
 * Call :func:`RequestTagID`
-* Wait for state to change to *RequestTagIDReady* (see :func:`GetState` or :func:`StateChanged`)
+* Wait for state to change to *RequestTagIDReady* (see :func:`GetState`
+  or :func:`StateChanged`)
 * Call :func:`GetTagID` and check if tag ID is correct
 * Call :func:`AuthenticateMifareClassicPage` with page and key for the page
 * Wait for state to change to *AuthenticatingMifareClassicPageReady*
@@ -304,9 +324,9 @@ sub authenticate_mifare_classic_page
 Writes 16 bytes starting from the given page. How many pages are written
 depends on the tag type. The page sizes are as follows:
 
-* Mifare Classic page size: 16 byte (1 page is written)
-* NFC Forum Type 1 page size: 8 byte (2 pages are written)
-* NFC Forum Type 2 page size: 4 byte (4 pages are written)
+* Mifare Classic page size: 16 byte (one page is written)
+* NFC Forum Type 1 page size: 8 byte (two pages are written)
+* NFC Forum Type 2 page size: 4 byte (four pages are written)
 
 The general approach for writing to a tag is as follows:
 

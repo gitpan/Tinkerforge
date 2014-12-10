@@ -24,4 +24,4 @@ requires:
   Thread::Queue: 3.02
   Thread::Semaphore: 0
   threads: 0
-version: v2.1.2
+version: v2.1.3

@@ -1,8 +1,8 @@
 
 #############################################################
-# This file was automatically generated on 2014-08-11.      #
+# This file was automatically generated on 2014-12-10.      #
 #                                                           #
-# Bindings Version 2.1.2                                    #
+# Bindings Version 2.1.3                                    #
 #                                                           #
 # If you have a bugfix for this file and want to commit it, #
 # please fix the bug in the generator. You can find a link  #
@@ -488,7 +488,10 @@ sub light_off
 
 =item is_light_on()
 
-Returns *true* if the backlight is on and *false* otherwise.
+Returns the state of the LED. Possible values are:
+
+* 0: On
+* 1: Off
 
 =cut
 

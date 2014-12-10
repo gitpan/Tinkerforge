@@ -1,8 +1,8 @@
 
 #############################################################
-# This file was automatically generated on 2014-08-11.      #
+# This file was automatically generated on 2014-12-10.      #
 #                                                           #
-# Bindings Version 2.1.2                                    #
+# Bindings Version 2.1.3                                    #
 #                                                           #
 # If you have a bugfix for this file and want to commit it, #
 # please fix the bug in the generator. You can find a link  #
@@ -599,12 +599,12 @@ sub is_enabled
 =item set_minimum_voltage()
 
 Sets the minimum voltage in mV, below which the :func:`UnderVoltage` callback
-is triggered. The minimum possible value that works with the DC Brick is 5V.
+is triggered. The minimum possible value that works with the DC Brick is 6V.
 You can use this function to detect the discharge of a battery that is used
 to drive the motor. If you have a fixed power supply, you likely do not need
 this functionality.
 
-The default value is 5V.
+The default value is 6V.
 
 =cut
 

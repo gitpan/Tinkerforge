@@ -1,8 +1,8 @@
 
 #############################################################
-# This file was automatically generated on 2014-08-11.      #
+# This file was automatically generated on 2014-12-10.      #
 #                                                           #
-# Bindings Version 2.1.2                                    #
+# Bindings Version 2.1.3                                    #
 #                                                           #
 # If you have a bugfix for this file and want to commit it, #
 # please fix the bug in the generator. You can find a link  #
@@ -354,7 +354,7 @@ sub get_config
 
 =item is_button_pressed()
 
-Returns *true* if the button (0 to 2 or 0 to 3 with hardware version >= 1.2) 
+Returns *true* if the button (0 to 2 or 0 to 3 since hardware version 1.2)
 is pressed. If you want to react
 on button presses and releases it is recommended to use the
 :func:`ButtonPressed` and :func:`ButtonReleased` callbacks.

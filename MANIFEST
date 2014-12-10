@@ -47,6 +47,7 @@ lib/Tinkerforge/BrickletTilt.pm
 lib/Tinkerforge/BrickletVoltage.pm
 lib/Tinkerforge/BrickletVoltageCurrent.pm
 lib/Tinkerforge/BrickMaster.pm
+lib/Tinkerforge/BrickRED.pm
 lib/Tinkerforge/BrickServo.pm
 lib/Tinkerforge/BrickStepper.pm
 lib/Tinkerforge/Device.pm

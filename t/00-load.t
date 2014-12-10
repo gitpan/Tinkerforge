@@ -4,7 +4,7 @@ use strict;
 use warnings FATAL => 'all';
 use Test::More;
 
-plan tests => 53;
+plan tests => 54;
 
 BEGIN {
     use_ok( 'Tinkerforge' ) || print "Bail out!\n";
@@ -14,6 +14,7 @@ BEGIN {
     use_ok( 'Tinkerforge::BrickDC' ) || print "Bail out!\n";
     use_ok( 'Tinkerforge::BrickIMU' ) || print "Bail out!\n";
     use_ok( 'Tinkerforge::BrickMaster' ) || print "Bail out!\n";
+    use_ok( 'Tinkerforge::BrickRED' ) || print "Bail out!\n";
     use_ok( 'Tinkerforge::BrickServo' ) || print "Bail out!\n";
     use_ok( 'Tinkerforge::BrickStepper' ) || print "Bail out!\n";
     use_ok( 'Tinkerforge::BrickletAmbientLight' ) || print "Bail out!\n";
